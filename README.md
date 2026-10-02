@@ -4,10 +4,15 @@
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Python: 3.10 | 3.11 | 3.12](https://img.shields.io/badge/Python-3.10%20%7C%203.11%20%7C%203.12-3776AB?logo=python)](https://www.python.org/)
 [![AI Architecture: Google Gemma 2](https://img.shields.io/badge/Model-Google%20Gemma%202-4285F4?logo=google)](https://ai.google.dev/gemma)
-[![Deployment: Render Blueprint](https://img.shields.io/badge/Deploy-Render-46E3B7?logo=render)](https://render.com)
+[![Deployment: Render Blueprint](https://img.shields.io/badge/Deploy-Render-46E3B7?logo=render)](https://phishguard-gemma.onrender.com/)
+[![Streamlit Cloud](https://img.shields.io/badge/Streamlit-Live%20Demo-FF4B4B?logo=streamlit)](https://phishguard-gemma.streamlit.app/)
 
 > **Zero-Leakage Spear-Phishing Threat Scanner & Forensic Auditor**  
 > *Built for a Friend (Alex) | Hacktoberfest 2026 Challenge*
+
+🌐 **Live Instances:**
+- 🚀 **Official Render Cloud:** [phishguard-gemma.onrender.com](https://phishguard-gemma.onrender.com/) *(Official Hackathon Host)*
+- ⚡ **Instant Streamlit Mirror:** [phishguard-gemma.streamlit.app](https://phishguard-gemma.streamlit.app/) *(Zero Cold-Start)*
 
 ---
 
