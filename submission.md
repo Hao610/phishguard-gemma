@@ -43,7 +43,7 @@ PhishGuard provides an intuitive, non-intimidating cybersecurity dashboard built
 
 The entire codebase is open-source, permissively licensed under Apache 2.0, and designed to run with zero proprietary lock-in.
 
-- **GitHub Repository**: [https://github.com/loichianghao/phishguard-gemma](https://github.com/loichianghao/phishguard-gemma)
+- **GitHub Repository**: [https://github.com/Hao610/phishguard-gemma](https://github.com/Hao610/phishguard-gemma)
 
 ---
 
