@@ -33,6 +33,22 @@ def test_legitimate_email_handling(engine):
     assert result["threat_score"] <= 30
 
 
+def test_pii_redaction(engine):
+    sample = "My phone is 555-123-4567 and my card is 4111-2222-3333-4444. Contact test@university.edu"
+    redacted = engine.redact_pii(sample)
+    assert "[REDACTED_PHONE]" in redacted["sanitized_text"]
+    assert "[REDACTED_CARD_NUMBER]" in redacted["sanitized_text"]
+    assert "[REDACTED_EMAIL]" in redacted["sanitized_text"]
+    assert redacted["stats"]["emails"] == 1
+    assert redacted["stats"]["cards"] == 1
+
+
+def test_url_defanging(engine):
+    url = "http://phishing-site.com"
+    defanged = engine.defang_url(url)
+    assert defanged == "hxxp://phishing-site[.]com"
+
+
 def test_eml_parser_header_extraction():
     raw_eml = """From: Security <alerts@wellsfargo-notice.com>
 To: victim@example.com
@@ -45,3 +61,4 @@ Dear Customer, please click to avoid termination.
     assert parsed["headers"]["from"] == "Security <alerts@wellsfargo-notice.com>"
     assert parsed["headers"]["subject"] == "Account Deactivation Notice"
     assert "please click" in parsed["body"]
+

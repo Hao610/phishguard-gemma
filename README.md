@@ -23,9 +23,12 @@ An open-source, air-gapped security analyzer that can run completely on his own 
 ## ✨ Core Capabilities
 
 - **Zero-Leakage Local Inference**: Analyzes sensitive messages offline via Gemma 2 open weights.
+- **Automated PII Sanitization Engine**: Automatically detects and masks sensitive Personal Identifiable Information (student IDs, phone numbers, credit card references) before model analysis.
+- **Defanged Evidence Inspector**: Converts live phishing URLs to safe forensic notation (`hxxp://site[.]com`) to eliminate accidental click-through hazards.
+- **Incident Response Report Export**: Generates timestamped, SHA-256 authenticated forensic incident reports suitable for submission to campus or corporate IT security teams.
 - **Deception Tactic Breakdown**: Unpacks psychological coercion, homoglyph domain impersonation, and unverified redirect chains.
 - **Friend-Friendly Remediation**: Translates complex security telemetry into 1-2-3 plain English actionable steps.
-- **Instant Dual-Mode Engine**: Operates seamlessly in full local air-gapped mode or cloud API preview mode.
+- **Dual-Mode Architecture**: Operates as an interactive Streamlit cyber dashboard or a headless automated CLI tool (`python cli.py scan`).
 
 ---
 

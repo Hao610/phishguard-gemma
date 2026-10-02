@@ -82,6 +82,84 @@ Ensure the output is raw JSON with no Markdown wrapping or conversational filler
 """
         return prompt
 
+    def defang_url(self, url: str) -> str:
+        """Industry standard defanging (converts http to hxxp and dots to [.] to prevent accidental clicks)."""
+        return url.replace("http://", "hxxp://").replace("https://", "hxxps://").replace(".", "[.]")
+
+    def redact_pii(self, text: str) -> Dict[str, Any]:
+        """Automatically scrubs sensitive Personal Identifiable Information (PII) before analysis."""
+        redacted = text
+        stats = {"names": 0, "emails": 0, "phones": 0, "cards": 0, "ids": 0}
+
+        # Email addresses
+        email_pattern = r'[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+'
+        emails = re.findall(email_pattern, redacted)
+        stats["emails"] = len(emails)
+        redacted = re.sub(email_pattern, "[REDACTED_EMAIL]", redacted)
+
+        # Credit cards / bank accounts
+        card_pattern = r'\b(?:\d{4}[ -]?){3}\d{4}\b'
+        cards = re.findall(card_pattern, redacted)
+        stats["cards"] = len(cards)
+        redacted = re.sub(card_pattern, "[REDACTED_CARD_NUMBER]", redacted)
+
+        # Phone numbers
+        phone_pattern = r'\b(?:\+?\d{1,3}[-.\s]?)?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}\b'
+        phones = re.findall(phone_pattern, redacted)
+        stats["phones"] = len(phones)
+        redacted = re.sub(phone_pattern, "[REDACTED_PHONE]", redacted)
+
+        # Student ID / Account ID formats (e.g., ID: 2024-88491)
+        id_pattern = r'(?i)(?:id|student\s*id|account\s*no|ref)[:\s]*([a-zA-Z0-9-_]{4,15})'
+        redacted = re.sub(id_pattern, r'ID: [REDACTED_STUDENT_ID]', redacted)
+
+        return {
+            "sanitized_text": redacted,
+            "stats": stats
+        }
+
+    def generate_incident_report(self, raw_message: str, result: Dict[str, Any]) -> str:
+        """Generates a formal, printable Incident Response Report for university/corporate IT."""
+        import hashlib
+        from datetime import datetime
+
+        msg_hash = hashlib.sha256(raw_message.encode('utf-8')).hexdigest()
+        timestamp = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S UTC")
+
+        tactics_str = "\n".join([f"  - {t}" for t in result.get("detected_tactics", [])])
+        actions_str = "\n".join([f"  {idx}. {a}" for idx, a in enumerate(result.get("safe_action_plan", []), 1)])
+
+        report = f"""================================================================================
+           PHISHGUARD INCIDENT RESPONSE & FORENSIC AUDIT REPORT
+================================================================================
+Generated Timestamp: {timestamp}
+Payload SHA-256:     {msg_hash}
+Audited by:          Google Gemma 2 Open Weights Engine (Local Privacy Mode)
+--------------------------------------------------------------------------------
+THREAT CLASSIFICATION
+Verdict:             {result.get('verdict')}
+Calibrated Risk:     {result.get('threat_score')} / 100
+Primary Assessment:  {result.get('summary')}
+--------------------------------------------------------------------------------
+IDENTIFIED ATTACK TACTICS
+{tactics_str}
+--------------------------------------------------------------------------------
+RECOMMENDED REMEDIATION STEPS FOR USER & IT DEPT
+{actions_str}
+--------------------------------------------------------------------------------
+DEFANGED ARTIFACTS & EVIDENCE CHAIN
+"""
+        indicators = self.extract_indicators(raw_message)
+        for url in indicators.get("urls_detected", []):
+            report += f"  - Defanged Target: {self.defang_url(url)}\n"
+
+        report += """================================================================================
+NOTICE: This report was generated locally without external telemetry data leakage.
+Submit this document directly to your organization's Security Operations Center (SOC).
+================================================================================
+"""
+        return report
+
     def analyze(self, raw_message: str, api_key: str = None) -> Dict[str, Any]:
         """Analyzes the raw message using Gemma model inference."""
         indicators = self.extract_indicators(raw_message)
@@ -99,7 +177,9 @@ Ensure the output is raw JSON with no Markdown wrapping or conversational filler
                     clean_text = clean_text.split("```json")[1].split("```")[0].strip()
                 elif "```" in clean_text:
                     clean_text = clean_text.split("```")[1].split("```")[0].strip()
-                return json.loads(clean_text)
+                res = json.loads(clean_text)
+                res["incident_report"] = self.generate_incident_report(raw_message, res)
+                return res
             except Exception as e:
                 pass
 
@@ -131,10 +211,13 @@ Ensure the output is raw JSON with no Markdown wrapping or conversational filler
         else:
             summary = "No immediate phishing indicators detected. The communication matches typical transactional patterns."
 
-        return {
+        res = {
             "verdict": verdict,
             "threat_score": min(score, 98),
             "summary": summary,
             "detected_tactics": tactics if tactics else ["Standard Informational"],
             "safe_action_plan": action_plan
         }
+        res["incident_report"] = self.generate_incident_report(raw_message, res)
+        return res
+

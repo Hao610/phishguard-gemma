@@ -28,20 +28,22 @@ That evening, we sat down over dinner, and I promised him: *"I'm going to build 
 
 ## Demo
 
-PhishGuard provides an intuitive, non-intimidating cybersecurity dashboard built in Streamlit. Instead of presenting raw hex dumps or cryptic network headers, it translates complex adversarial heuristics into plain, actionable advice that any non-technical friend can digest in 5 seconds.
+PhishGuard provides an intuitive, non-intimidating cybersecurity dashboard built in Streamlit, paired with an automated CLI for power users. Instead of presenting raw hex dumps or cryptic network headers, it translates complex adversarial heuristics into plain, actionable advice that any non-technical friend can digest in 5 seconds.
 
-### 🖼️ Key Features at a Glance:
-1. **Instant Threat Index**: A calibrated score from 0 (benign) to 100 (sophisticated zero-day social engineering).
-2. **Deception Tactic Decomposition**: Automatically isolates psychological panic triggers, lookalike Unicode homoglyphs, and unauthorized redirect chains.
-3. **Friend-Friendly Action Plan**: Step-by-step guidance tailored specifically for the victim (e.g., *"Step 1: Do NOT reply or click under time pressure; Step 2: Navigate to your university portal directly through your browser bookmark"*).
+### 🛡️ Enterprise-Grade Features Built for Everyday Friends:
+1. **Automated PII Sanitization Engine**: Automatically detects and masks sensitive Personal Identifiable Information (student IDs, phone numbers, credit card references) before model analysis.
+2. **Defanged Evidence Inspector**: Converts live phishing URLs to safe forensic notation (`hxxp://site[.]com`) to eliminate accidental click-through hazards.
+3. **Calibrated Threat Index**: A score from 0 (benign) to 100 (sophisticated zero-day social engineering).
+4. **Downloadable Incident Response Report**: Exports a timestamped, SHA-256 authenticated forensic incident document suitable for filing with university IT or local authorities.
+5. **Friend-Friendly Action Plan**: Step-by-step guidance tailored specifically for the victim (e.g., *"Step 1: Do NOT reply or click under time pressure; Step 2: Navigate to your university portal directly through your browser bookmark"*).
 
-*(Add your deployed Render URL or local demo GIF here)*
+*(Add your deployed Render URL or local demo GIF / screenshot here)*
 
 ---
 
 ## Code
 
-The entire codebase is open-source, permissively licensed under Apache 2.0, and designed to run with zero proprietary lock-in.
+The entire codebase is open-source, permissively licensed under Apache 2.0, complete with automated unit tests and a CI pipeline.
 
 - **GitHub Repository**: [https://github.com/Hao610/phishguard-gemma](https://github.com/Hao610/phishguard-gemma)
 
@@ -59,7 +61,7 @@ PhishGuard is architected as an intelligent dual-stage forensic pipeline:
 │ Stage 1: Deterministic Heuristic Tagger│
 │ - Homoglyph / Lookalike Domain Matcher │
 │ - Artificial Urgency Word Boundary     │
-│ - URL Redirect Pattern Isolator        │
+│ - URL Defanging & PII Redactor         │
 └──────────────────┬─────────────────────┘
                    │ Context Injection
                    ▼
@@ -71,7 +73,7 @@ PhishGuard is architected as an intelligent dual-stage forensic pipeline:
 └──────────────────┬─────────────────────┘
                    │
                    ▼
-[ 100% Local, Private Threat Report ]
+[ 100% Local, Private Threat & Incident Report ]
 ```
 
 ### 1. Google Gemma 2 Core
@@ -79,11 +81,11 @@ At the heart of the analytical engine is **Google's Gemma 2** instruction-tuned 
 
 Gemma excels at understanding nuanced linguistic coercion—distinguishing genuine administrative notifications from deceptive spear-phishing crafted by generative AI attackers.
 
-### 2. Streamlit Cyber-Dashboard
-We designed the user interface using Streamlit, incorporating high-contrast visual safety indicators (red/amber/green) and pre-loaded test vectors (Bank Lockout, Bursary Grant, Genuine Workspace Sync) so Alex can cross-reference what real attacks look like.
+### 2. Streamlit Cyber-Dashboard & Full CLI
+We designed the user interface using Streamlit with a modern dual-column layout (Input & Live PII Scrubbing on the left; Defanged IOCs & Remediation on the right). For automated environments, PhishGuard also provides a native command-line interface (`python cli.py scan`).
 
-### 3. Native Render Cloud Blueprint
-To ensure non-technical friends can also access the tool from their phone when away from their desktop, we created a zero-configuration `render.yaml` specification. It deploys natively as a containerized Python Web Service on **Render's free tier**.
+### 3. Native Render Cloud Blueprint & CI Pipeline
+To ensure non-technical friends can also access the tool from their phone when away from their desktop, we created a zero-configuration `render.yaml` specification. It deploys natively as a containerized Python Web Service on **Render's free tier**. Automated unit tests are executed across Python 3.10–3.12 via GitHub Actions on every commit.
 
 ---
 
