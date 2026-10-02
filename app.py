@@ -202,16 +202,15 @@ SCENARIOS = {
         ),
     },
     "job": {
-        "label": "💼 Fake Job Interview",
+        "label": "⚠️ Unsolicited Recruiter (Verify Domain)",
         "text": (
-            "Hi LOI CHIANG HAO,\n\n"
-            "Please find below your interview details:\n\n"
-            "Position: SRE Engineer (DevOps) — Fresh Graduate\n"
-            "Interview Date: 2026-10-01 17:00 (UTC+08:00)\n"
-            "Video URL: https://interview.antgroup.com/home/entry?token=695a4c5f-e440-409f-bf2c-c420555e3ea9\n\n"
-            "For concerns contact: WONG See Khee | seekhee.w@ant-intl.com | 010-58178688\n\n"
-            "This is a system email, please do not reply.\n"
-            "Ant Group — Campus Recruitment Department"
+            "Hi candidate,\n\n"
+            "We reviewed your resume on LinkedIn and are pleased to invite you for an interview.\n\n"
+            "Position: Senior DevOps Engineer\n"
+            "Date: Tomorrow 15:00 UTC\n"
+            "Meeting Portal: https://interview-portal.global-careers-hire.xyz/entry?token=9f82bc1a\n\n"
+            "Please confirm your attendance by logging in above.\n"
+            "Talent Acquisition Team"
         ),
     },
     "safe": {
