@@ -360,21 +360,28 @@ if run_btn and raw_input.strip():
 
     # ── Verdict Banner ────────────────────────────────────────────────────
     col_v, col_s, col_m = st.columns([1, 1.8, 1.2])
-
     with col_v:
         if verdict == "CRITICAL_PHISHING":
-            st.markdown('<div class="verdict-critical">', unsafe_allow_html=True)
-            st.error("### 🛑 CRITICAL")
-            st.markdown("**High-confidence phishing**")
+            st.markdown("""
+            <div class="verdict-critical">
+                <h3 style="margin:0; color:#f87171;">🛑 CRITICAL</h3>
+                <p style="margin:4px 0 0 0; color:#fca5a5; font-size:0.9rem;">High-confidence phishing</p>
+            </div>
+            """, unsafe_allow_html=True)
         elif verdict == "SUSPICIOUS":
-            st.markdown('<div class="verdict-suspicious">', unsafe_allow_html=True)
-            st.warning("### ⚠️ SUSPICIOUS")
-            st.markdown("**Proceed with caution**")
+            st.markdown("""
+            <div class="verdict-suspicious">
+                <h3 style="margin:0; color:#fbbf24;">⚠️ SUSPICIOUS</h3>
+                <p style="margin:4px 0 0 0; color:#fde68a; font-size:0.9rem;">Proceed with caution</p>
+            </div>
+            """, unsafe_allow_html=True)
         else:
-            st.markdown('<div class="verdict-safe">', unsafe_allow_html=True)
-            st.success("### ✅ SAFE")
-            st.markdown("**No threats detected**")
-        st.markdown('</div>', unsafe_allow_html=True)
+            st.markdown("""
+            <div class="verdict-safe">
+                <h3 style="margin:0; color:#34d399;">✅ SAFE</h3>
+                <p style="margin:4px 0 0 0; color:#a7f3d0; font-size:0.9rem;">No threats detected</p>
+            </div>
+            """, unsafe_allow_html=True)
 
         st.markdown(f"**Attack Type:** `{attack_type}`")
         st.markdown(f"**Confidence:** `{confidence}`")
