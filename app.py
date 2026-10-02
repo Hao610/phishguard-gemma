@@ -4,7 +4,7 @@ Built for a Friend (Alex) | Hacktoberfest 2026
 Powered by Google Gemma 2 Open-Source AI Architecture
 
 Dual-Theme Design System: Obsidian Dark & Titanium Precision
-Strict semantic token architecture, zero hardcoded color coupling.
+Strict semantic token architecture with seamless native Streamlit Settings integration.
 """
 
 import streamlit as st
@@ -29,38 +29,57 @@ st.set_page_config(
 )
 
 # ─────────────────────────────────────────────────────────────────────────────
-# Theme State Initialization (DOM + LocalStorage + Session Synchronizer)
-# ─────────────────────────────────────────────────────────────────────────────
-
-if "theme" not in st.session_state:
-    st.session_state.theme = "system"  # 'system' | 'dark' | 'light'
-
-# ─────────────────────────────────────────────────────────────────────────────
 # Dual-Theme Engine (Obsidian Dark & Titanium Light)
+# Fully synchronized with Streamlit's native Settings menu (Light/Dark/System)
 # ─────────────────────────────────────────────────────────────────────────────
 
-def inject_dual_theme_engine(active_theme: str):
+def inject_dual_theme_engine():
     """
     Injects the complete semantic Design Token CSS variables, button system,
-    dot-matrix background canvas, and DOM root attributes.
+    dot-matrix background canvas, and native theme observer.
     """
-    resolved_theme_attr = f'data-theme="{active_theme}"' if active_theme in ["dark", "light"] else ""
-    
-    css_content = f"""
+    css_content = """
 <script>
-    // Zero-flicker sync: synchronize DOM root attribute with state or system preference
-    (function() {{
-        const themeChoice = "{active_theme}";
-        let finalTheme = themeChoice;
-        if (themeChoice === "system") {{
-            finalTheme = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? "light" : "dark";
-        }}
-        document.documentElement.setAttribute("data-theme", finalTheme);
-        const stAppContainer = window.parent.document.querySelector('.stApp') || document.querySelector('.stApp');
-        if (stAppContainer) {{
-            stAppContainer.setAttribute("data-theme", finalTheme);
-        }}
-    }})();
+    // Universal Streamlit native theme observer
+    (function() {
+        function syncStreamlitTheme() {
+            try {
+                const targetDoc = window.parent.document || document;
+                const stApp = targetDoc.querySelector('.stApp') || document.querySelector('.stApp');
+                
+                // Read Streamlit's internal theme setting or class
+                const isLight = targetDoc.body.classList.contains('light-theme') || 
+                               (stApp && (stApp.getAttribute('data-theme') === 'light' || 
+                                          stApp.classList.contains('light-theme') ||
+                                          window.getComputedStyle(stApp).backgroundColor.includes('255, 255, 255') ||
+                                          window.getComputedStyle(stApp).backgroundColor.includes('248, 250, 252')));
+                
+                const themeVal = isLight ? "light" : "dark";
+                document.documentElement.setAttribute("data-theme", themeVal);
+                if (stApp) {
+                    stApp.setAttribute("data-theme", themeVal);
+                }
+            } catch(e) {}
+        }
+        
+        syncStreamlitTheme();
+        
+        // Listen to system preference changes if in auto mode
+        if (window.matchMedia) {
+            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', syncStreamlitTheme);
+        }
+        
+        // Observer for Streamlit native Settings dialog theme toggle changes
+        try {
+            const targetDoc = window.parent.document || document;
+            const observer = new MutationObserver(syncStreamlitTheme);
+            observer.observe(targetDoc.body, { attributes: true, attributeFilter: ['class', 'data-theme'] });
+            const stApp = targetDoc.querySelector('.stApp');
+            if (stApp) {
+                observer.observe(stApp, { attributes: true, attributeFilter: ['class', 'data-theme', 'style'] });
+            }
+        } catch(e) {}
+    })();
 </script>
 
 <style>
@@ -68,9 +87,9 @@ def inject_dual_theme_engine(active_theme: str):
    SEMANTIC DESIGN TOKENS (DUAL-THEME ENGINE)
    ========================================================================== */
 
-/* 1. Default: Obsidian Titanium Dark Mode (System Fallback & Explicit Dark) */
+/* 1. Default: Obsidian Titanium Dark Mode (Native Streamlit Dark & System Dark) */
 :root,
-[data-theme="dark"] {{
+[data-theme="dark"] {
     --app-bg: #050507;
     --dot-color: rgba(255, 255, 255, 0.08);
     --surface-card: rgba(12, 12, 16, 0.55);
@@ -110,11 +129,11 @@ def inject_dual_theme_engine(active_theme: str):
     --gauge-border: #27272a;
     --gauge-num: #ffffff;
     --gauge-tick: #71717a;
-}}
+}
 
-/* 2. System Level Light Query Fallback (When no explicit override) */
-@media (prefers-color-scheme: light) {{
-    :root:not([data-theme="dark"]) {{
+/* 2. System Level Light Query Fallback (When system or user prefers light) */
+@media (prefers-color-scheme: light) {
+    :root:not([data-theme="dark"]) {
         --app-bg: #f8fafc;
         --dot-color: rgba(15, 23, 42, 0.06);
         --surface-card: #ffffff;
@@ -154,11 +173,13 @@ def inject_dual_theme_engine(active_theme: str):
         --gauge-border: #cbd5e1;
         --gauge-num: #0f172a;
         --gauge-tick: #64748b;
-    }}
-}}
+    }
+}
 
-/* 3. Explicit Titanium Precision Light Mode */
-[data-theme="light"] {{
+/* 3. Explicit Titanium Precision Light Mode (Activated by Streamlit Light Toggle) */
+[data-theme="light"],
+body.light-theme,
+.stApp[data-theme="light"] {
     --app-bg: #f8fafc;
     --dot-color: rgba(15, 23, 42, 0.06);
     --surface-card: #ffffff;
@@ -198,56 +219,56 @@ def inject_dual_theme_engine(active_theme: str):
     --gauge-border: #cbd5e1;
     --gauge-num: #0f172a;
     --gauge-tick: #64748b;
-}}
+}
 
 /* ==========================================================================
    GLOBAL CANVAS & SURFACE ARCHITECTURE
    ========================================================================== */
 
 /* Universal smooth transition */
-*, *::before, *::after {{
+*, *::before, *::after {
     transition: background-color 0.22s cubic-bezier(0.16, 1, 0.3, 1),
                 border-color 0.22s cubic-bezier(0.16, 1, 0.3, 1),
                 color 0.22s cubic-bezier(0.16, 1, 0.3, 1),
                 box-shadow 0.22s cubic-bezier(0.16, 1, 0.3, 1);
-}}
+}
 
 /* App canvas with industrial precision dot-matrix texture */
-.stApp {{
+.stApp {
     background-color: var(--app-bg) !important;
     background-image: radial-gradient(var(--dot-color) 1.5px, transparent 1.5px) !important;
     background-size: 24px 24px !important;
     color: var(--text-primary) !important;
-}}
+}
 
 /* Sidebar styling */
-section[data-testid="stSidebar"] {{
+section[data-testid="stSidebar"] {
     background-color: var(--surface-card) !important;
     border-right: 1px solid var(--border-color) !important;
     backdrop-filter: blur(16px);
-}}
-section[data-testid="stSidebar"] * {{
+}
+section[data-testid="stSidebar"] * {
     color: var(--text-primary);
-}}
+}
 section[data-testid="stSidebar"] p,
-section[data-testid="stSidebar"] caption {{
+section[data-testid="stSidebar"] caption {
     color: var(--text-secondary) !important;
-}}
+}
 
 /* Typography */
-h1, h2, h3, h4, h5, h6 {{
+h1, h2, h3, h4, h5, h6 {
     color: var(--text-primary) !important;
     font-weight: 700 !important;
-}}
-p, span, label {{
+}
+p, span, label {
     color: var(--text-secondary);
-}}
-.stCaption, caption {{
+}
+.stCaption, caption {
     color: var(--text-muted) !important;
-}}
+}
 
 /* Header typography */
-.main-header {{
+.main-header {
     font-size: 2.3rem;
     font-weight: 900;
     letter-spacing: -0.6px;
@@ -255,32 +276,32 @@ p, span, label {{
     background: linear-gradient(90deg, #0ea5e9 0%, #38bdf8 50%, #818cf8 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-}}
-.sub-header {{
+}
+.sub-header {
     font-size: 1.02rem;
     color: var(--text-secondary) !important;
     margin-bottom: 22px;
-}}
+}
 
 /* Surface Card Container */
-.cyber-card {{
+.cyber-card {
     background-color: var(--surface-card) !important;
     border: 1px solid var(--border-color) !important;
     border-radius: 12px;
     padding: 16px 20px;
     backdrop-filter: blur(14px);
     box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.06);
-}}
-.cyber-card:hover {{
+}
+.cyber-card:hover {
     border-color: var(--border-hover) !important;
-}}
+}
 
 /* ==========================================================================
    BUTTON SYSTEM (NON-INVERTED INDUSTRIAL SYSTEM)
    ========================================================================== */
 
 /* All Streamlit standard buttons (Secondary Action: Scenario Selectors, etc.) */
-div[data-testid="stButton"] > button:not([kind="primary"]) {{
+div[data-testid="stButton"] > button:not([kind="primary"]) {
     background: var(--btn-sec-bg) !important;
     border: 1px solid var(--btn-sec-border) !important;
     border-radius: 10px !important;
@@ -289,18 +310,18 @@ div[data-testid="stButton"] > button:not([kind="primary"]) {{
     padding: 10px 16px !important;
     backdrop-filter: blur(8px);
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04) !important;
-}}
-div[data-testid="stButton"] > button:not([kind="primary"]):hover {{
+}
+div[data-testid="stButton"] > button:not([kind="primary"]):hover {
     background: var(--btn-sec-hover-bg) !important;
     border-color: var(--btn-sec-hover-border) !important;
     transform: translateY(-1px);
-}}
-div[data-testid="stButton"] > button:not([kind="primary"]) * {{
+}
+div[data-testid="stButton"] > button:not([kind="primary"]) * {
     color: inherit !important;
-}}
+}
 
 /* Primary CTA Button (Audit Execution) */
-div[data-testid="stButton"] > button[kind="primary"] {{
+div[data-testid="stButton"] > button[kind="primary"] {
     background: var(--btn-primary-bg) !important;
     border: var(--btn-primary-border) !important;
     border-radius: 10px !important;
@@ -308,56 +329,56 @@ div[data-testid="stButton"] > button[kind="primary"] {{
     font-weight: 700 !important;
     padding: 12px 20px !important;
     box-shadow: var(--btn-primary-shadow) !important;
-}}
-div[data-testid="stButton"] > button[kind="primary"]:hover {{
+}
+div[data-testid="stButton"] > button[kind="primary"]:hover {
     background: var(--btn-primary-hover-bg) !important;
     border: 1px solid var(--btn-primary-hover-border) !important;
     transform: translateY(-1px);
-}}
-div[data-testid="stButton"] > button[kind="primary"] * {{
+}
+div[data-testid="stButton"] > button[kind="primary"] * {
     color: inherit !important;
-}}
+}
 
 /* Text Area Input */
-div[data-baseweb="textarea"] {{
+div[data-baseweb="textarea"] {
     background-color: var(--input-bg) !important;
     border: 1px solid var(--input-border) !important;
     border-radius: 10px !important;
-}}
-div[data-baseweb="textarea"]:focus-within {{
+}
+div[data-baseweb="textarea"]:focus-within {
     border-color: var(--input-focus-border) !important;
     box-shadow: 0 0 0 1px var(--input-focus-border) !important;
-}}
-textarea {{
+}
+textarea {
     color: var(--text-primary) !important;
     background-color: transparent !important;
-}}
+}
 
 /* Code Blocks & Defanged Urls */
-div[data-testid="stCodeBlock"] {{
+div[data-testid="stCodeBlock"] {
     background-color: var(--code-bg) !important;
     border: 1px solid var(--border-color) !important;
     border-radius: 8px !important;
-}}
-code {{
+}
+code {
     color: var(--code-text) !important;
-}}
+}
 
 /* Timeline Action Steps */
-.timeline-step {{
+.timeline-step {
     border-left: 2px solid #0284c7;
     padding-left: 14px;
     margin-bottom: 12px;
-}}
-.timeline-step strong {{
+}
+.timeline-step strong {
     color: var(--text-primary) !important;
-}}
-.timeline-step span, .timeline-step div {{
+}
+.timeline-step span, .timeline-step div {
     color: var(--text-secondary) !important;
-}}
+}
 
 /* Monospace Report Container */
-.report-box {{
+.report-box {
     background: var(--code-bg);
     border: 1px solid var(--border-color);
     border-radius: 8px;
@@ -367,47 +388,18 @@ code {{
     color: var(--code-text);
     white-space: pre;
     overflow-x: auto;
-}}
-
-/* Dynamic Theme Switcher Component in Sidebar */
-.theme-switch-container {{
-    display: flex;
-    background: var(--surface-card);
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    padding: 4px;
-    gap: 4px;
-    margin-bottom: 16px;
-}}
+}
 </style>
 """
     st.markdown(css_content, unsafe_allow_html=True)
 
 # ─────────────────────────────────────────────────────────────────────────────
-# Sidebar: Controls & Theme Selection
+# Sidebar: Controls
 # ─────────────────────────────────────────────────────────────────────────────
 
 with st.sidebar:
     st.markdown("## 🛡️ PhishGuard")
     st.caption("Forensic-grade phishing analysis — zero data leakage")
-
-    # Dual-Theme Selector Switch
-    st.markdown("##### 🎨 Interface Theme")
-    theme_choice = st.radio(
-        "Theme Mode",
-        options=["System (Auto)", "🌙 Dark (Obsidian)", "☀️ Light (Titanium)"],
-        index=0 if st.session_state.theme == "system" else (1 if st.session_state.theme == "dark" else 2),
-        label_visibility="collapsed",
-        horizontal=True
-    )
-    
-    # Map selection back to state
-    if "Dark" in theme_choice:
-        st.session_state.theme = "dark"
-    elif "Light" in theme_choice:
-        st.session_state.theme = "light"
-    else:
-        st.session_state.theme = "system"
 
     st.markdown("""
     > **Built for Alex** 🎓
@@ -445,15 +437,15 @@ with st.sidebar:
     - 🔬 **Engine:** Gemma 2 9B IT + 11-dim heuristics
     - 🔒 **Privacy Shield:** PII pre-scrubbed locally
     - 📄 **SOC Artifact:** Downloadable incident report
-    - 🎨 **System:** Dual-theme semantic design token
+    - 🎨 **Adaptive Themes:** Follows Streamlit Settings (Dark/Light)
     """)
     st.markdown(
         "[![GitHub](https://img.shields.io/badge/GitHub-Hao610%2Fphishguard--gemma-blue?logo=github)](https://github.com/Hao610/phishguard-gemma)"
     )
     st.caption("🏆 Hacktoberfest 2026 — Build for a Friend | Best Use of Gemma")
 
-# Inject Dual Theme Engine
-inject_dual_theme_engine(st.session_state.theme)
+# Inject Dual Theme Engine (driven by Streamlit Settings)
+inject_dual_theme_engine()
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Engine instance
@@ -683,29 +675,21 @@ if run_btn and raw_input.strip():
         st.caption(f"Analysis by: {model_used}")
 
     with col_s:
-        # Determine theme-adaptive chart colors
-        is_light = (st.session_state.theme == "light")
-        paper_bg = "#f8fafc" if is_light else "#050507"
-        meter_bg = "#ffffff" if is_light else "#0c0c12"
-        border_c = "#cbd5e1" if is_light else "#27272a"
-        num_c = "#0f172a" if is_light else "#ffffff"
-        tick_c = "#64748b" if is_light else "#71717a"
         gauge_color = "#ef4444" if score >= 70 else ("#f59e0b" if score >= 40 else "#10b981")
 
+        # Dynamic transparent plot that respects theme tokens
         fig = go.Figure(go.Indicator(
             mode="gauge+number",
             value=score,
-            title={"text": "Threat Index", "font": {"color": tick_c, "size": 14}},
-            number={"font": {"color": num_c, "size": 36}, "suffix": "/100"},
+            title={"text": "Threat Index", "font": {"size": 14}},
+            number={"font": {"size": 36}, "suffix": "/100"},
             gauge={
-                "axis": {"range": [0, 100], "tickcolor": tick_c},
+                "axis": {"range": [0, 100]},
                 "bar": {"color": gauge_color, "thickness": 0.25},
-                "bgcolor": meter_bg,
-                "bordercolor": border_c,
                 "steps": [
-                    {"range": [0, 40], "color": "#064e3b" if not is_light else "#dcfce7"},
-                    {"range": [40, 70], "color": "#78350f" if not is_light else "#fef3c7"},
-                    {"range": [70, 100], "color": "#7f1d1d" if not is_light else "#fee2e2"},
+                    {"range": [0, 40], "color": "rgba(16, 185, 129, 0.20)"},
+                    {"range": [40, 70], "color": "rgba(245, 158, 11, 0.20)"},
+                    {"range": [70, 100], "color": "rgba(239, 68, 68, 0.20)"},
                 ],
                 "threshold": {
                     "line": {"color": gauge_color, "width": 3},
@@ -715,8 +699,8 @@ if run_btn and raw_input.strip():
             },
         ))
         fig.update_layout(
-            paper_bgcolor=paper_bg,
-            plot_bgcolor=paper_bg,
+            paper_bgcolor="rgba(0,0,0,0)",
+            plot_bgcolor="rgba(0,0,0,0)",
             margin={"t": 40, "b": 10, "l": 20, "r": 20},
             height=200,
         )
