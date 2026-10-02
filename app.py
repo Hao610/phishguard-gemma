@@ -471,7 +471,7 @@ if run_btn and raw_input.strip():
         )
 
     with prev_col:
-        with st.expander("🔍 Preview Report", expanded=(verdict == "CRITICAL_PHISHING")):
+        with st.expander("🔍 Preview Report", expanded=False):
             st.code(result.get("incident_report", ""), language="text")
 
 elif run_btn and not raw_input.strip():
