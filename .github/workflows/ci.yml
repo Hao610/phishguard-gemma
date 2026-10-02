@@ -28,5 +28,7 @@ jobs:
         pip install pytest
 
     - name: Run Forensic Unit Tests
+      env:
+        PYTHONPATH: .
       run: |
-        pytest tests/ -v
+        python -m pytest tests/ -v
