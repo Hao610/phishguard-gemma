@@ -1,63 +1,153 @@
-# 🛡️ PhishGuard — Built for a Friend
+# 🛡️ PhishGuard
 
-> **A Privacy-First Open Source AI Security Shield against Spear Phishing & Social Engineering**  
-> Powered by **Google Gemma 2 Open Weights** & Local Forensic Heuristics.
+[![CI Test Suite](https://github.com/Hao610/phishguard-gemma/actions/workflows/ci.yml/badge.svg)](https://github.com/Hao610/phishguard-gemma/actions)
+[![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![Python: 3.10 | 3.11 | 3.12](https://img.shields.io/badge/Python-3.10%20%7C%203.11%20%7C%203.12-3776AB?logo=python)](https://www.python.org/)
+[![AI Architecture: Google Gemma 2](https://img.shields.io/badge/Model-Google%20Gemma%202-4285F4?logo=google)](https://ai.google.dev/gemma)
+[![Deployment: Render Blueprint](https://img.shields.io/badge/Deploy-Render-46E3B7?logo=render)](https://render.com)
 
-[![Hacktoberfest 2026](https://img.shields.io/badge/Hacktoberfest-2026-blueviolet.svg)](https://hacktoberfest.com/)
-[![Built with Gemma](https://img.shields.io/badge/Model-Google_Gemma_2-4285F4.svg)](https://ai.google.dev/gemma)
-[![Deploy on Render](https://img.shields.io/badge/Deploy-Render-46E3B7.svg)](https://render.com)
-
----
-
-## 💡 The Story: Why I Built This for Alex
-
-Last week, my close college friend **Alex** nearly fell victim to a sophisticated spear-phishing attack. An email arrived appearing to be from our university's bursar's office, complete with his correct student ID and academic department, urging him to verify his direct deposit details to receive an emergency grant within 12 hours.
-
-Alex had a bad feeling, but **he hesitated to paste the email into commercial cloud LLMs (like ChatGPT)** because the message contained his real name, phone number, and student reference. He didn't want his personal identifiers stored on third-party model servers.
-
-**PhishGuard was built specifically for Alex:**  
-An open-source, air-gapped security analyzer that can run completely on his own laptop with **Google Gemma 2**, providing zero data leakage, zero subscription costs, and forensic-grade threat detection.
+> **Zero-Leakage Spear-Phishing Threat Scanner & Forensic Auditor**  
+> *Built for a Friend (Alex) | Hacktoberfest 2026 Challenge*
 
 ---
 
-## ✨ Core Capabilities
+## 💡 The Origin: Built for Alex
 
-- **Zero-Leakage Local Inference**: Analyzes sensitive messages offline via Gemma 2 open weights.
-- **Automated PII Sanitization Engine**: Automatically detects and masks sensitive Personal Identifiable Information (student IDs, phone numbers, credit card references) before model analysis.
-- **Defanged Evidence Inspector**: Converts live phishing URLs to safe forensic notation (`hxxp://site[.]com`) to eliminate accidental click-through hazards.
-- **Incident Response Report Export**: Generates timestamped, SHA-256 authenticated forensic incident reports suitable for submission to campus or corporate IT security teams.
-- **Deception Tactic Breakdown**: Unpacks psychological coercion, homoglyph domain impersonation, and unverified redirect chains.
-- **Friend-Friendly Remediation**: Translates complex security telemetry into 1-2-3 plain English actionable steps.
-- **Dual-Mode Architecture**: Operates as an interactive Streamlit cyber dashboard or a headless automated CLI tool (`python cli.py scan`).
+Alex almost fell for a spear-phishing email that quoted his **real student ID and tuition balance**.  
+He wanted to verify it with AI, but stopped:
+
+> *"Can I paste this email into ChatGPT? It has my real student ID and financial record in it..."*
+
+That moment exposed the **core paradox of modern anti-phishing tools**:
+> **The messages most in need of analysis are the ones least safe to upload.**
+
+**PhishGuard** was built to solve this. It inverts the paradigm by running a **privacy-first, dual-stage pipeline**:
+1. **Local Privacy Shield:** Automatically strips Personal Identifiable Information (PII) before any telemetry leaves your machine.
+2. **Offline-First Heuristics + Gemma 2 Intelligence:** Detects multi-vector social engineering via local rules or Google Gemma 2 open architecture.
 
 ---
 
-## 🚀 Quickstart (Running Locally in 1 Minute)
+## ✨ Key Features
 
-```bash
-# Clone the repository
-git clone https://github.com/yourusername/phishguard-gemma.git
-cd phishguard-gemma
+- 🔒 **Zero Data Leakage:** PII scrubber automatically redacts credit cards (Luhn format), student IDs, Malaysian NRIC, phone numbers, and emails locally.
+- 🔬 **11-Dimensional Threat Heuristic Engine:** Extracts weighted urgency triggers, lookalike domains (homoglyphs), raw IP URLs, URL shorteners, suspicious TLDs, and credential harvesting paths.
+- 🧠 **Google Gemma 2 AI Architecture:** Formats inputs using Gemma 2's native `<start_of_turn>` chat structure to produce SOC-grade forensic assessments.
+- 🎨 **Adaptive Dual-Theme System:** Features industrial-grade **Obsidian Dark** and **Titanium Light** precision themes that sync with Streamlit's native settings.
+- 🔗 **Live Defanged URL Inspector:** Automatically transforms hazardous links (`http://...` → `hxxp[://]...[.]...`) to prevent accidental clicks.
+- 📄 **SOC-Ready Incident Response Reports:** Automatically generates printable `.txt` reports complete with SHA-256 evidence chain hashes and remediation steps.
+- ⚡ **100% Air-Gap Compatible:** Completely operational without an internet connection or API keys.
 
-# Install dependencies
-pip install -r requirements.txt
+---
 
-# Launch the Streamlit application
-streamlit run app.py
+## 🏗️ Technical Architecture
+
+```
+                       ┌─────────────────────────┐
+                       │  Incoming Raw Message   │
+                       └────────────┬────────────┘
+                                    │
+                                    ▼
+                       ┌─────────────────────────┐
+                       │  Stage 1: Privacy Shield│
+                       │  (Local PII Redaction)  │
+                       └────────────┬────────────┘
+                                    │ Sanitized Text
+                 ┌──────────────────┴──────────────────┐
+                 ▼                                     ▼
+   ┌───────────────────────────┐         ┌───────────────────────────┐
+   │  Stage 2: Heuristic Core  │         │  Stage 3: Gemma 2 Engine  │
+   │  - 11 Threat Vectors      │         │  - Google Gemma 2 9B-IT   │
+   │  - Weighted Urgency Regex │         │  - Structured JSON Output │
+   │  - Homoglyph Detection    │         │  - Adversarial Prompting  │
+   └─────────────┬─────────────┘         └─────────────┬─────────────┘
+                 │                                     │
+                 └──────────────────┬──────────────────┘
+                                    │
+                                    ▼
+                       ┌─────────────────────────┐
+                       │ Stage 4: SOC Report Gen │
+                       │ - Threat Index (0-100)  │
+                       │ - SHA-256 Hash Evidence │
+                       │ - Defanged IoC Chain    │
+                       └─────────────────────────┘
 ```
 
 ---
 
-## 🌐 Deploy to Render
+## 🚀 Quickstart Guide
 
-PhishGuard includes a ready-to-use `render.yaml` blueprint. Simply link your GitHub repository to Render and deploy as a free Web Service.
+### Option 1: One-Click Cloud Deployment (Render)
+
+Deploy your own private instance on Render's infrastructure in under 2 minutes:
+
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/Hao610/phishguard-gemma)
+
+The included [`render.yaml`](render.yaml) blueprint automatically manages Python runtimes and Streamlit launch flags.
 
 ---
 
-## 🏆 Hacktoberfest 2026 Submission
+### Option 2: Local Installation (Recommended for Maximum Privacy)
 
-- **Challenge**: *Build for a Friend* (Weekend Challenge)
-- **Target Categories**: 
-  - `Best Use of Gemma`
-  - `Best Use of Render`
-  - Overall Winner
+```bash
+# 1. Clone the repository
+git clone https://github.com/Hao610/phishguard-gemma.git
+cd phishguard-gemma
+
+# 2. Create a virtual environment
+python -m venv venv
+source venv/bin/activate  # On Windows: .\venv\Scripts\activate
+
+# 3. Install lightweight dependencies
+pip install -r requirements.txt
+
+# 4. Launch the dashboard
+streamlit run app.py
+```
+
+Open your browser at `http://localhost:8501`.
+
+---
+
+## 💻 CLI & Forensic Mail Parser
+
+PhishGuard includes a standalone command-line interface and MIME email parser:
+
+```bash
+# Direct text audit
+python cli.py scan "URGENT: Your Wells Fargo account is suspended. Verify at http://wellsfarg0.xyz"
+
+# Raw .eml file audit (extracts SPF, DKIM, and Return-Path headers)
+python cli.py scan-file tests/sample_phish.eml
+```
+
+---
+
+## 🧪 Automated Unit Testing
+
+PhishGuard maintains automated unit test coverage across 13 security test cases:
+
+```bash
+pytest tests/ -v
+```
+
+```text
+tests/test_engine.py::test_bank_phishing_critical PASSED                 [  7%]
+tests/test_engine.py::test_credential_harvesting_detection PASSED        [ 15%]
+tests/test_engine.py::test_legitimate_email_safe PASSED                  [ 23%]
+tests/test_engine.py::test_ip_url_detection PASSED                       [ 30%]
+tests/test_engine.py::test_shortened_url_detection PASSED                [ 38%]
+tests/test_engine.py::test_pii_redaction_phone_card_email PASSED         [ 46%]
+tests/test_engine.py::test_pii_redaction_preserves_safe_content PASSED   [ 53%]
+tests/test_engine.py::test_url_defanging_http PASSED                     [ 61%]
+tests/test_engine.py::test_url_defanging_https PASSED                    [ 69%]
+tests/test_engine.py::test_ioc_extracts_all_dimensions PASSED            [ 76%]
+tests/test_engine.py::test_incident_report_contains_hash PASSED          [ 84%]
+tests/test_engine.py::test_incident_report_defangs_urls PASSED           [ 92%]
+tests/test_engine.py::test_eml_parser_extracts_headers PASSED            [100%]
+```
+
+---
+
+## 📜 License
+
+Distributed under the Apache 2.0 Open Source License. See [`LICENSE`](LICENSE) for details.
